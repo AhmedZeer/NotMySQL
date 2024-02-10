@@ -4,18 +4,18 @@
 #include <string.h>
 
 typedef enum{
-  META_COMMAND_SUCCESS;
-  META_COMMAND_UNRECOGNIZED_COMMAND;
+  META_COMMAND_SUCCESS,
+  META_COMMAND_UNRECOGNIZED_COMMAND
 } MetaCommandResult;
 
 typedef enum{
-  PREPARE_SUCCESS;
-  PREPARE_UNRECOGNIZED_STATEMENT;
+  PREPARE_SUCCESS,
+  PREPARE_UNRECOGNIZED_STATEMENT
 } PrepareResult;
 
 typedef enum{
-  STATEMENT_INSERT;
-  STATEMENT_SELECT;
+  STATEMENT_INSERT,
+  STATEMENT_SELECT
 } StatementType;
 
 typedef struct {
@@ -40,7 +40,7 @@ PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement)
 
   if( strncmp(input_buffer->buffer, "insert",6) == 0 ){
     statement->type = STATEMENT_INSERT;
-    return PREPARE_SUCCESS
+    return PREPARE_SUCCESS;
   }
   if( strcmp(input_buffer->buffer, "select") == 0 ){
     statement->type = STATEMENT_SELECT;
@@ -51,13 +51,13 @@ PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement)
 }
 
 void execute_statement(Statement* statement){
-  switch (statement) {
+  switch (statement->type) {
     case(STATEMENT_INSERT):
-      printf("yes we are inserting..\n")
+      printf("yes we are inserting..\n");
       break;
     
     case(STATEMENT_SELECT):
-      printf("yes here we select..\n")
+      printf("yes here we select..\n");
       break;
   }
 }
@@ -98,7 +98,7 @@ void repl_loop(){
     print_prompt();
     read_input(input_buffer);
 
-    if(input_buffer[0] == '.'){
+    if(input_buffer->buffer[0] == '.'){
       switch (do_meta_command(input_buffer)) {
         case(META_COMMAND_SUCCESS):
           continue;
@@ -117,6 +117,6 @@ void repl_loop(){
     }
     
     execute_statement(&statement);
-    printf("Executed.\n")
+    printf("Executed.\n");
   }
 }
